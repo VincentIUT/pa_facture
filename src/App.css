@@ -34,7 +34,9 @@
 
 .img-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 100px;
+  align-items: center;
 }
 
 .invoice-preview {
@@ -78,4 +80,8 @@
   width: 120px;
   height: 60px;
 
+}
+
+.loading-div {
+  width: 80px;
 }

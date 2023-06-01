@@ -1,16 +1,23 @@
 import { useState, useEffect } from 'react';
-import { Button, List, ListItem, ListItemIcon, ListItemText, Paper, TextField, ToggleButtonGroup, ToggleButton, Modal, Box } from '@mui/material';
-import { lightBlue } from '@mui/material/colors';
+import { Button, Paper, TextField, ToggleButtonGroup, ToggleButton, Modal, Box } from '@mui/material';
 import './App.css';
 import {useDropzone} from 'react-dropzone';
+import api from "./api"
+import ClockLoader from "react-spinners/ClockLoader";
 
 
 function App() {
   const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
-  const [picture, setPicture] = useState<File>();
   const [imgData, setImgData] = useState<any>();
   const [invoiceType, setInvoiceType] = useState<"incoming"|"outgoing">("incoming");
   const [open, setOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [number, setNumber] = useState<string>("");
+  const [date, setDate] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
+  const [ht, setHT] = useState<string>("");
+  const [tva, setTVA] = useState<string>("");
+  const [ttc, setTTC] = useState<string>("");
   const files = acceptedFiles.map(file => (
     // @ts-ignore
     <li key={file.path}>
@@ -22,15 +29,31 @@ function App() {
   useEffect(() => {
     if (acceptedFiles[0]) {
       console.log("picture: ", acceptedFiles);
-      setPicture(acceptedFiles[0]);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
         setImgData(reader.result);
+        sendFile(reader.result);
       });
       reader.readAsDataURL(acceptedFiles[0]);
     }
   }, [acceptedFiles]);
 
+  //requete Axios
+  const sendFile = async (fileResult:any) => {
+    const bodyFormData = new FormData();
+    bodyFormData.append('facture', acceptedFiles[0]);
+    setLoading(true)
+    const response = await api.post("main", bodyFormData)
+    setLoading(false)
+    if (response.data?.results) {
+      setNumber(response.data.results.NUM)
+      setDate(response.data.results.DATE)
+      setAddress(response.data.results.ADRESSE)
+      setHT(response.data.results.HT)
+      setTVA(response.data.results.TVA)
+      setTTC(response.data.results.TTC)
+    }
+  }  
   function handleChangeType(
     event: React.MouseEvent<HTMLElement>,
     newInvoiceType: "incoming"|"outgoing",
@@ -39,7 +62,9 @@ function App() {
     };
 
   function handleSave(){
-    console.log(invoiceType) //mettre les data sauvegardées
+    console.log({"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "TYPE": invoiceType}) 
+    //à activer quand le back sera prêt
+    //api.post("/save", {"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "TYPE": invoiceType})
   }
   
 
@@ -71,14 +96,23 @@ function App() {
 
       <section className='img-container'>
         <img src={imgData} className='invoice-preview' onClick={()=>setOpen(true)} />
+
+        {loading ? <ClockLoader
+        color={"#29b6f6"}
+        loading={loading}
+        size={80}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      /> : <div className="loading-div" /> }
+
         <Paper elevation={3} className='paper'>
           
-          <TextField id="outlined-basic" label="Invoice number" variant="outlined" />
-          <TextField id="outlined-basic" label="Date" variant="outlined" />
-          <TextField id="outlined-basic" label="Address" variant="outlined" />
-          <TextField id="outlined-basic" label="Total HT" variant="outlined" />
-          <TextField id="outlined-basic" label="Total TVA" variant="outlined" />
-          <TextField id="outlined-basic" label="Total TTC" variant="outlined" />
+          <TextField id="number" value={number} onChange={event => setNumber(event.target.value)} label="Invoice number" variant="outlined" />
+          <TextField id="date" value={date} onChange={event => setDate(event.target.value)} label="Date" variant="outlined" />
+          <TextField id="address" value={address} onChange={event => setAddress(event.target.value)} label="Address" variant="outlined" />
+          <TextField id="ht" value={ht} onChange={event => setHT(event.target.value)} label="Total HT" variant="outlined" />
+          <TextField id="tva" value={tva} onChange={event => setTVA(event.target.value)} label="Total TVA" variant="outlined" />
+          <TextField id="ttc" value={ttc} onChange={event => setTTC(event.target.value)} label="Total TTC" variant="outlined" />
 
         </Paper>
       </section>
