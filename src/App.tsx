@@ -18,6 +18,7 @@ function App() {
   const [ht, setHT] = useState<string>("");
   const [tva, setTVA] = useState<string>("");
   const [ttc, setTTC] = useState<string>("");
+  const [classe, setClasse] = useState<string>("");
   const files = acceptedFiles.map(file => (
     // @ts-ignore
     <li key={file.path}>
@@ -52,6 +53,7 @@ function App() {
       setHT(response.data.results.HT)
       setTVA(response.data.results.TVA)
       setTTC(response.data.results.TTC)
+      setClasse(response.data.results.classe)
     }
   }  
   function handleChangeType(
@@ -62,7 +64,7 @@ function App() {
     };
 
   function handleSave(){
-    console.log({"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "TYPE": invoiceType}) 
+    console.log({"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "classe": classe, "TYPE": invoiceType}) 
     //à activer quand le back sera prêt
     //api.post("/save", {"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "TYPE": invoiceType})
   }
@@ -113,6 +115,7 @@ function App() {
           <TextField id="ht" value={ht} onChange={event => setHT(event.target.value)} label="Total HT" variant="outlined" />
           <TextField id="tva" value={tva} onChange={event => setTVA(event.target.value)} label="Total TVA" variant="outlined" />
           <TextField id="ttc" value={ttc} onChange={event => setTTC(event.target.value)} label="Total TTC" variant="outlined" />
+          <TextField id="classe" value={classe} onChange={event => setClasse(event.target.value)} label="Classe" variant="outlined" />
 
         </Paper>
       </section>
