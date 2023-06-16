@@ -55,7 +55,46 @@ function App() {
       setTTC(response.data.results.TTC)
       setClasse(response.data.results.classe)
     }
-  }  
+  } 
+  
+/*   const handleSave = async(formResult:any) =>{
+    const bodyFormResult = new FormData();
+    bodyFormResult.append('DATE', date);
+    bodyFormResult.append('ADRESSE', address);
+    bodyFormResult.append('NUM', number);
+    bodyFormResult.append('HT', ht);
+    bodyFormResult.append('TVA', tva);
+    bodyFormResult.append('TTC', ttc);
+    bodyFormResult.append('classe', classe);
+    bodyFormResult.append('TYPE', invoiceType);
+    console.log(bodyFormResult)
+    const response = await api.post("save", bodyFormResult)
+    
+  } */
+
+  const handleSave = async (formResult: any) => {
+    const requestData = {
+      DATE: date,
+      ADRESSE: address,
+      NUM: number,
+      HT: ht,
+      TVA: tva,
+      TTC: ttc,
+      classe: classe,
+      TYPE: invoiceType
+    };
+  
+    try {
+      const response = await api.post("save", requestData);
+      console.log(response.data); // Log the response data if needed
+      // Handle the response as desired
+    } catch (error) {
+      console.error("Save error:", error);
+      // Handle the error as desired
+    }
+  };
+  
+
   function handleChangeType(
     event: React.MouseEvent<HTMLElement>,
     newInvoiceType: "incoming"|"outgoing",
@@ -63,11 +102,16 @@ function App() {
       setInvoiceType(newInvoiceType);
     };
 
-  function handleSave(){
-    console.log({"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "classe": classe, "TYPE": invoiceType}) 
-    //à activer quand le back sera prêt
-    //api.post("/save", {"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "TYPE": invoiceType})
-  }
+//  function handleSave(){
+//    console.log({"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "classe": classe, "TYPE": invoiceType}) ;
+//    //à activer quand le back sera prêt
+//    try{
+//    api.post("/save", {"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "classe": classe, "TYPE": invoiceType});
+//  } catch (error){
+//  	console.error('Form data save error :', error);
+//  }
+
+//  };
   
 
   const style = {
