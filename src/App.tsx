@@ -55,7 +55,62 @@ function App() {
       setTTC(response.data.results.TTC)
       setClasse(response.data.results.classe)
     }
-  }  
+  } 
+  
+/*   const handleSave = async(formResult:any) =>{
+    const bodyFormResult = new FormData();
+    bodyFormResult.append('DATE', date);
+    bodyFormResult.append('ADRESSE', address);
+    bodyFormResult.append('NUM', number);
+    bodyFormResult.append('HT', ht);
+    bodyFormResult.append('TVA', tva);
+    bodyFormResult.append('TTC', ttc);
+    bodyFormResult.append('classe', classe);
+    bodyFormResult.append('TYPE', invoiceType);
+    console.log(bodyFormResult)
+    const response = await api.post("save", bodyFormResult)
+    
+  } */
+
+  const handleSave = async (formResult: any) => {
+    const requestData = {
+      DATE: date,
+      ADRESSE: address,
+      NUM: number,
+      HT: ht,
+      TVA: tva,
+      TTC: ttc,
+      classe: classe,
+      TYPE: invoiceType
+    };
+  
+    try {
+      const response = await api.post("save", requestData);
+      console.log(response.data); // Log the response data if needed
+      // Handle the response as desired
+    } catch (error) {
+      console.error("Save error:", error);
+      // Handle the error as desired
+    }
+  };
+
+  const handleDownload = async () => {
+    try {
+      const response = await api.get("download", { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'data.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Download error:", error);
+    }
+  }
+  
+  
+
   function handleChangeType(
     event: React.MouseEvent<HTMLElement>,
     newInvoiceType: "incoming"|"outgoing",
@@ -63,11 +118,7 @@ function App() {
       setInvoiceType(newInvoiceType);
     };
 
-  function handleSave(){
-    console.log({"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "classe": classe, "TYPE": invoiceType}) 
-    //à activer quand le back sera prêt
-    //api.post("/save", {"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "TYPE": invoiceType})
-  }
+
   
 
   const style = {
@@ -137,6 +188,7 @@ function App() {
           </ToggleButtonGroup>
         </div>
         <Button variant="contained" className='saveButton' onClick={handleSave}>Save</Button>
+        <Button variant="contained" className='downloadButton' onClick={handleDownload}>Download csv</Button>
       </section>
       
       <Modal
