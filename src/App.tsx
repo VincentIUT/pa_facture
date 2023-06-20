@@ -93,6 +93,22 @@ function App() {
       // Handle the error as desired
     }
   };
+
+  const handleDownload = async () => {
+    try {
+      const response = await api.get("download", { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'data.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Download error:", error);
+    }
+  }
+  
   
 
   function handleChangeType(
@@ -102,16 +118,7 @@ function App() {
       setInvoiceType(newInvoiceType);
     };
 
-//  function handleSave(){
-//    console.log({"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "classe": classe, "TYPE": invoiceType}) ;
-//    //à activer quand le back sera prêt
-//    try{
-//    api.post("/save", {"DATE": date, "ADRESSE": address, "NUM": number, "HT": ht, "TVA": tva, "TTC": ttc, "classe": classe, "TYPE": invoiceType});
-//  } catch (error){
-//  	console.error('Form data save error :', error);
-//  }
 
-//  };
   
 
   const style = {
@@ -181,6 +188,7 @@ function App() {
           </ToggleButtonGroup>
         </div>
         <Button variant="contained" className='saveButton' onClick={handleSave}>Save</Button>
+        <Button variant="contained" className='downloadButton' onClick={handleDownload}>Download csv</Button>
       </section>
       
       <Modal
