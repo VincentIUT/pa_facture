@@ -57,20 +57,6 @@ function App() {
     }
   } 
   
-/*   const handleSave = async(formResult:any) =>{
-    const bodyFormResult = new FormData();
-    bodyFormResult.append('DATE', date);
-    bodyFormResult.append('ADRESSE', address);
-    bodyFormResult.append('NUM', number);
-    bodyFormResult.append('HT', ht);
-    bodyFormResult.append('TVA', tva);
-    bodyFormResult.append('TTC', ttc);
-    bodyFormResult.append('classe', classe);
-    bodyFormResult.append('TYPE', invoiceType);
-    console.log(bodyFormResult)
-    const response = await api.post("save", bodyFormResult)
-    
-  } */
 
   const handleSave = async (formResult: any) => {
     const requestData = {

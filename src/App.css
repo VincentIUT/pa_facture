@@ -82,6 +82,12 @@
 
 }
 
+.downloadButton {
+  width: 180px;
+  height: 60px;
+
+}
+
 .loading-div {
   width: 80px;
 }
